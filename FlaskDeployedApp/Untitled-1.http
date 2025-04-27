@@ -1,0 +1,7 @@
+POST http://localhost:11434/api/generate HTTP/1.1
+content-type: application/json
+
+{
+    "model": "gemma3:1b",
+    "prompt": "nasılsın"
+}

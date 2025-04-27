@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Yapay Zeka ve Takviye Çözümleri">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <title>{% block pagetitle %}{% endblock pagetitle %}</title>
+    
+    <style>
+        :root {
+            /* Yeni modern renk paleti */
+            --primary-color: #3a86ff;       /* Canlı mavi */
+            --secondary-color: #f1faee;     /* Açık gri-beyaz */
+            --dark-color: #1d3557;          /* Koyu lacivert */
+            --light-color: #ffffff;         /* Beyaz */
+            --accent-color: #ff006e;        /* Parlak pembe aksan */
+            --neutral-color: #8d99ae;       /* Nötr gri-mavi */
+            --success-color: #52b788;       /* Yumuşak yeşil */
+            --gradient-color: linear-gradient(135deg, #3a86ff, #ff006e); /* Gradient efekti */
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Navbar styles */
+        .navbar {
+            background-color: var(--dark-color) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            padding: 0;
+            margin-right: 1.5rem;
+            color: var(--light-color) !important;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link {
+            color: var(--light-color);
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            margin: 0 3px;
+        }
+        
+        .navbar-dark .navbar-nav .nav-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        /* AI Engine button - Yapay Zeka Motoru special styling */
+        .ai-engine-btn {
+            background: var(--gradient-color);
+            color: white !important;
+            font-weight: 500;
+            border-radius: 20px;
+            padding: 0.5rem 1.2rem !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease !important;
+        }
+        
+        .ai-engine-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #ff006e, #3a86ff) !important;
+        }
+        
+        .ai-engine-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: all 0.4s ease;
+        }
+        
+        .ai-engine-btn:hover::before {
+            transform: translateX(0);
+        }
+        
+        .ai-engine-btn i {
+            margin-right: 6px;
+        }
+        
+        /* Hero section style */
+        .hero-section {
+            background-image: linear-gradient(rgba(29, 53, 87, 0.8), rgba(29, 53, 87, 0.8)), url("images/background.jpeg");
+            background-position: center;
+            background-size: cover;
+            padding: 6rem 0;
+            position: relative;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+        
+        .hero-title {
+            font-weight: 700;
+            color: var(--light-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-subtitle {
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        /* Custom button styles */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--light-color);
+            color: var(--light-color);
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* File upload styles */
+        .file-upload {
+            margin: 2rem 0;
+        }
+        
+        .file-upload label {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .file-upload label:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-upload input[type='file'] {
+            display: none;
+        }
+        
+        /* Card styles */
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            background-color: var(--light-color);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            font-weight: 500;
+        }
+        
+        /* Section styles */
+        .section {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            color: var(--dark-color);
+            margin-bottom: 2.5rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+        
+        /* Footer styles */
+        .footer {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            padding: 3rem 0 1rem;
+            margin-top: auto;
+        }
+        
+        .footer ul {
+            padding: 0;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer ul li {
+            margin: 0 15px;
+        }
+        
+        .footer ul a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer ul a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer .social-icons {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin: 0 10px;
+            color: var(--light-color);
+            transition: all 0.3s ease;
+        }
+        
+        .footer .social-icons a:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer .copyright {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--neutral-color);
+        }
+        
+        /* Chatbot button styles */
+        .chatbot-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .chatbot-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar-collapse {
+                background-color: var(--dark-color);
+                padding: 1rem;
+                border-radius: 8px;
+                margin-top: 0.5rem;
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 0.8rem 1rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .navbar-nav .nav-link:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Yapay Zeka Çözümleri</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/"><i class="fas fa-home"></i> Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ai-engine-btn" href="/index"><i class="fas fa-robot"></i> Yapay Zeka Motoru</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/market"><i class="fas fa-shopping-cart"></i> Takviyeler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact"><i class="fas fa-envelope"></i> Bize Ulaşın</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    {% block body %}{% endblock body %}
+
+    <!-- Chatbot Button -->
+    <a href="/chat" class="chatbot-btn">
+        <i class="fas fa-comments"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <ul class="footer-links">
+                <li><a href="/">Ana Sayfa</a></li>
+                <li><a href="/index">Yapay Zeka</a></li>
+                <li><a href="/market">Takviyeler</a></li>
+                <li><a href="/contact">İletişim</a></li>
+            </ul>
+            <p class="copyright">© 2025 İsmail Üstek. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

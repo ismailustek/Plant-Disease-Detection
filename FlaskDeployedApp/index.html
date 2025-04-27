@@ -1,0 +1,221 @@
+<html>
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+AI Engine
+{% endblock pagetitle %}
+
+{% block body %}
+<div class="container">
+    <!-- Başlık -->
+    <div class="row mb-5 text-center text-white">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="display-4" style="padding-top: 2%; font-weight: 400; color: rgb(4, 54, 4);">
+                <b>🍀Yapay Zeka🍀</b>
+            </h1>
+            <p class="lead" style="font-weight: 500; color: black;">Hastalıkları Tespit Etmenize Yardımcı Olur</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Açıklama Kısmı -->
+        <div class="col mx-auto">
+            <div class="p-5 bg-white shadow rounded-lg" style="height: 95%;">
+                <h5><b>Bitkilerde hastalık tespiti neden gereklidir?</b></h5>
+                <p>Bitki hastalıkları, kendi türlerinin büyümesini etkiler. Ek olarak, belirtiler ortaya çıkmadan önce
+                    hastalıkları tespit etmek için araştırmalar yapılmaktadır. Tanı, bitki patoloğunun en önemli
+                    görevidir. Yanlış teşhis zaman ve para kaybına yol açabilir.</p>
+            </div>
+        </div>
+
+        <!-- Dosya Seçme Kısmı -->
+        <div class="col mx-auto">
+            <div class="p-5 bg-white shadow rounded-lg">
+                <img id="preview-image"
+                    src="https://www.pngjoy.com/pngl/250/4840262_plants-png-indoors-tropical-plant-png-hd-png.png"
+                    height="300" alt="Preview" width="200" class="d-block mx-auto mb-4">
+
+                <!-- Dosya Yükleme Formu -->
+                <form action="/submit" method="POST" enctype="multipart/form-data">
+                    <div class="custom-file overflow-hidden mb-4">
+                        <input type="file" id="actual-btn" hidden name="image" accept="image/*"
+                            onchange="previewFile()" />
+                        <label for="actual-btn" class="custom-file-label">Dosya Seçin</label>
+                        <br>
+                        <span id="file-chosen">Hiçbir dosya seçilmedi</span>
+                    </div>
+
+                    <h6 class="text-center mb-4 text-muted">
+                        Bitkinizin yaprak görüntüsünü yükleyin ve yapay zekanın büyüsünü görün.
+                    </h6>
+
+                    <center>
+                        <!-- Kamera ile Çek Butonu -->
+                        <button type="button" class="btn btn-primary mb-3" onclick="openCamera()">Kamera ile
+                            Çek</button>
+
+                        <!-- Video ve Canvas Alanları -->
+                        <video id="camera" width="448" height="448" autoplay style="display:none;"></video>
+                        <canvas id="canvas" style="display:none;"></canvas>
+
+                        <!-- Fotoğraf Çek Butonu -->
+                        <button type="button" class="btn btn-danger" id="capture-btn" style="display:none;"
+                            onclick="captureImage()">Fotoğraf Çek</button>
+
+                        <!-- Onayla ve Gönder Butonu -->
+                        <button type="button" class="btn btn-success" id="confirm-btn" style="display:none;"
+                            onclick="uploadCapturedImage()">Onayla ve Gönder</button>
+
+                        <!-- Yükle Butonu (Başlangıçta devre dışı) -->
+                        <button type="submit" class="btn btn-success mb-3" id="submit-btn" disabled>Dosya Yükle</button>
+                    </center>
+                </form>
+            </div>
+        </div>
+
+        <!-- Hastalık Önleme Adımları -->
+        <div class="col mx-auto">
+            <div class="p-5 bg-white shadow rounded-lg" style="height: 95%;">
+                <h5><b>Bitki Hastalıklarını Önlemek için aşağıdaki adımları izleyin:</b></h5>
+                <ol>
+                    <li>İyi Hijyen Uygulamalarını Takip Edin</li>
+                    <li>Bitkilerinizin Sağlıklı Kalması İçin Gübreleyin.</li>
+                    <li>Bitkileri Eve Getirmeden Önce Hastalıklara Karşı Kontrol Edin.</li>
+                    <li>Dikimden Önce Toprağın Isınmasını Sağlayın.</li>
+                    <li>Ürün Rotasyonu Yaparak Sağlıklı Bir Bahçe Sağlayın.</li>
+                    <li>İyi Hava Sirkülasyonu Sağlayın</li>
+                    <li>Hastalıklı Gövdeleri ve Yaprakları Temizleyin</li>
+                </ol>
+                <a target="_blank"
+                    href="https://coolconceptflower.com/blog/evde-bitki-hastaliklari--tani--tedavi-ve-onleme-yollari?srsltid=AfmBOoo9md8pTv_juWL5bZBCDb9jjTeqzBQQbjE4r-Q8h3jaZOZor-6C"
+                    class="mx-2">
+                    <button type="button" class="btn btn-outline-success">Daha Fazla Bilgi</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stil -->
+<style>
+    .custom-file-label {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .custom-file-label:hover {
+        background-color: #218838;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    .col {
+        padding: 20px;
+    }
+
+    .p-5 {
+        padding: 20px !important;
+    }
+</style>
+
+<!-- JavaScript -->
+<script>
+    document.getElementById('actual-btn').addEventListener('change', function () {
+        let fileChosen = document.getElementById('file-chosen');
+        let submitBtn = document.getElementById('submit-btn');  // Yükle butonunu al
+
+        if (this.files.length > 0) {
+            fileChosen.textContent = this.files[0].name;
+            submitBtn.disabled = false;  // Dosya seçildiğinde butonu etkinleştir
+        } else {
+            fileChosen.textContent = "Hiçbir dosya seçilmedi";
+            submitBtn.disabled = true;  // Dosya seçilmediyse butonu devre dışı bırak
+        }
+    });
+
+    function openCamera() {
+        const video = document.getElementById("camera");
+        const captureBtn = document.getElementById("capture-btn");
+        const submitBtn = document.getElementById("submit-btn");
+
+        // Kamera açıldığında Yükle butonunu gizle
+        submitBtn.style.display = "none";
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                video.style.display = "block";
+                captureBtn.style.display = "block";
+            })
+            .catch(err => {
+                alert("Kamera erişimi reddedildi: " + err);
+            });
+    }
+
+    function captureImage() {
+        const video = document.getElementById("camera");
+        const canvas = document.getElementById("canvas");
+        const context = canvas.getContext("2d");
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imageDataUrl = canvas.toDataURL("image/png");
+        document.getElementById("preview-image").src = imageDataUrl;
+
+        // Kamera durduruluyor
+        video.srcObject.getTracks().forEach(track => track.stop());
+        video.style.display = "none";
+        document.getElementById("capture-btn").style.display = "none";
+
+        // Kullanıcıya onay butonu göster
+        document.getElementById("confirm-btn").style.display = "block";
+
+        // Fotoğraf çekildikten sonra Yükle butonunu gizle
+        const submitBtn = document.getElementById("submit-btn");
+        submitBtn.style.display = "none";
+    }
+
+    function uploadCapturedImage() {
+        const canvas = document.getElementById("canvas");
+
+        // Canvas'taki görüntüyü Blob olarak al
+        canvas.toBlob((blob) => {
+            const file = new File([blob], "captured_image.png", { type: "image/png" });
+            let formData = new FormData();
+            formData.append("image", file);
+
+            // AJAX isteği ile Flask backend'e gönder
+            fetch("/submit", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Sunucu hatası!');
+                    }
+                    return response.text();  // HTML yanıtını alıyoruz
+                })
+                .then(html => {
+                    // Gelen yanıt HTML ise, sayfayı yeni içerik ile değiştirelim
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(error => {
+                    console.error("Yükleme hatası:", error);
+                    alert("Bir hata oluştu.");
+                });
+        }, "image/png");
+    }
+</script>
+
+{% endblock body %}

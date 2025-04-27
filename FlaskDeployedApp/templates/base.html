@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Yapay Zeka ile Bitki Hastalıklarının Tespiti">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <title>{% block pagetitle %}{% endblock pagetitle %}</title>
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #f8fafc;
+            --dark: #0f172a;
+            --light: #ffffff;
+            --accent: #ec4899;
+            --success: #10b981;
+            --neutral: #64748b;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--secondary);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Navbar styles */
+        .navbar {
+            background-color: var(--light) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary) !important;
+            font-size: 1.5rem;
+        }
+        
+        .navbar-light .navbar-nav .nav-link {
+            color: var(--dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: var(--primary);
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+        
+        .navbar-light .navbar-nav .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* AI Engine button */
+        .ai-engine-btn {
+            background: var(--primary);
+            color: var(--light) !important;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1.2rem !important;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease !important;
+        }
+        
+        .ai-engine-btn:hover {
+            background: var(--primary-dark) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.4);
+        }
+        
+        /* Hero section */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 5rem 0;
+            color: var(--light);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-title {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-subtitle {
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+        
+        /* Plant card styles */
+        .plant-card {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: none;
+        }
+        
+        .plant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .plant-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .plant-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .plant-card .card-body {
+            padding: 1.5rem;
+        }
+        
+        .plant-card .card-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0;
+            text-align: center;
+        }
+        
+        /* Button styles */
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            border-radius: var(--border-radius);
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.4);
+        }
+        
+        /* Chatbot button */
+        .chatbot-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary);
+            color: var(--light);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--box-shadow);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 1000;
+        }
+        
+        .chatbot-btn:hover {
+            background-color: var(--accent);
+            transform: scale(1.1);
+            color: var(--light);
+        }
+        
+        .chatbot-btn i {
+            font-size: 1.5rem;
+        }
+        
+        /* Footer styles */
+        .footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 3rem 0 1.5rem;
+            margin-top: auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-links li {
+            margin: 0 1rem;
+        }
+        
+        .footer-links a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .social-icons {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin: 0 0.5rem;
+            color: var(--light);
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--neutral);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background-color: var(--light);
+                padding: 1rem;
+                border-radius: var(--border-radius);
+                margin-top: 0.5rem;
+                box-shadow: var(--box-shadow);
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .ai-engine-btn {
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .hero-section {
+                padding: 3rem 0;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .plant-card img {
+                height: 180px;
+            }
+        }
+                /* Hero section */
+                .hero-section {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 3rem 0;
+            color: var(--light);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-subtitle {
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        /* Card styles */
+        .content-card {
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            height: 100%;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .content-card h5 {
+            color: var(--dark);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+        
+        .content-card h5::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        
+        /* Upload area styles */
+        .upload-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            background-color: rgba(37, 99, 235, 0.05);
+            padding: 1rem;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 250px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        
+        .preview-container:hover .preview-image {
+            transform: scale(1.05);
+        }
+        
+        .file-upload-container {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .file-upload-label {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: var(--light);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 0.75rem;
+        }
+        
+        .file-upload-label:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .file-name {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--neutral);
+            font-size: 0.9rem;
+        }
+        
+        /* Button styles */
+        .btn {
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--light);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            border-color: var(--success);
+            color: var(--light);
+        }
+        
+        .btn-success:hover {
+            background-color: #0ca678;
+            border-color: #0ca678;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            border-color: #ef4444;
+            color: var(--light);
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+        }
+        
+        .btn-outline-success {
+            color: var(--success);
+            border-color: var(--success);
+        }
+        
+        .btn-outline-success:hover {
+            background-color: var(--success);
+            color: var(--light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Video and canvas */
+        #camera, #canvas {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+        
+        /* Footer styles */
+        .footer {
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 3rem 0 1.5rem;
+            margin-top: auto;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .content-row {
+                flex-direction: column;
+            }
+            
+            .content-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+            
+            .hero-title {
+                font-size: 1.75rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-leaf me-2"></i>Yapay Zeka Çözümleri
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/"><i class="fas fa-home me-1"></i> Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ai-engine-btn" href="/index"><i class="fas fa-robot me-1"></i> Yapay Zeka Motoru</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/market"><i class="fas fa-shopping-cart me-1"></i> Takviyeler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact"><i class="fas fa-envelope me-1"></i> Bize Ulaşın</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    {% block body %}{% endblock body %}
+
+    <!-- Chatbot Button -->
+    <a href="/chat" class="chatbot-btn">
+        <i class="fas fa-comments"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <ul class="footer-links">
+                <li><a href="/">Ana Sayfa</a></li>
+                <li><a href="/index">Yapay Zeka</a></li>
+                <li><a href="/market">Takviyeler</a></li>
+                <li><a href="/contact">İletişim</a></li>
+            </ul>
+            <p class="copyright">© 2025 İsmail Üstek. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Check if device is mobile and show appropriate content
+        document.addEventListener('DOMContentLoaded', function() {
+            const isMobile = window.innerWidth < 768;
+            
+            if (isMobile) {
+                // Create a mobile notice if needed
+                const heroSection = document.querySelector('.hero-section');
+                const mobileNotice = document.createElement('div');
+                mobileNotice.className = 'alert alert-warning mt-3 mx-3';
+                mobileNotice.innerHTML = '<strong>Not:</strong> Bu uygulamayı en iyi deneyim için bilgisayar üzerinden kullanmanızı öneririz.';
+                
+                // Insert after hero section
+                heroSection.parentNode.insertBefore(mobileNotice, heroSection.nextSibling);
+            }
+        });
+    </script>
+</body>
+</html>
